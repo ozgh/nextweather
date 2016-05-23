@@ -63,6 +63,9 @@ public class DatabaseManager {
 				list.add(province);
 			} while (cursor.moveToNext());
 		}
+		if(cursor!=null){
+			cursor.close();
+		}
 		return list;
 	}
 	
@@ -94,6 +97,9 @@ public class DatabaseManager {
 				list.add(city);
 			} while (cursor.moveToNext());
 		}
+		if(cursor!=null){
+			cursor.close();
+		}
 		return list;
 	}
 	
@@ -124,6 +130,9 @@ public class DatabaseManager {
 				county.setCityId(cityId);
 				list.add(county);
 			} while (cursor.moveToNext());
+		}
+		if(cursor!=null){
+			cursor.close();
 		}
 		return list;
 	}
