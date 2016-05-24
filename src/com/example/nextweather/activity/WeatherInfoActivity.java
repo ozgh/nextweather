@@ -1,6 +1,7 @@
 package com.example.nextweather.activity;
 
 import com.example.nextweather.R;
+import com.example.nextweather.service.AutoUpdateService;
 import com.example.nextweather.util.HttpCallbackListener;
 import com.example.nextweather.util.HttpUtil;
 import com.example.nextweather.util.Utility;
@@ -155,5 +156,8 @@ public class WeatherInfoActivity extends Activity implements OnClickListener{
 		currentDateText.setText(prefs.getString("current_date", ""));
 		weatherInfoLayout.setVisibility(View.VISIBLE);
 		cityNameText.setVisibility(View.VISIBLE);
+		/*显示一次天气信息界面后启动后台自动更新天气的定时服务*/
+		Intent intent=new Intent(this,AutoUpdateService.class);
+		startService(intent);	/*意图启动的目标组件是服务，则随后应调用启动服务的方法*/
 	}
 }

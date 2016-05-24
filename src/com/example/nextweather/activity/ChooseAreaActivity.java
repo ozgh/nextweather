@@ -262,7 +262,7 @@ public class ChooseAreaActivity extends Activity {
 			startActivity(intent);	/*按下Back键时，如果是从WeatherActivity活动中
 			跳转过来的，则应重新回到WeatherInfoActivity中*/
 			Toast.makeText(this, "若是从天气显示界面更改城市中跳转过来的，则还是返回到天气界面中",
-					Toast.LENGTH_SHORT).show();
+					Toast.LENGTH_LONG).show();
 			finish();
 		} else if(currentLevel==LEVEL_PROVINCE&selectedCity==null) {
 			Toast.makeText(this, "再次按返回将退出程序", Toast.LENGTH_SHORT);
