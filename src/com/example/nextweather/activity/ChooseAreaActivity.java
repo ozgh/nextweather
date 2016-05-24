@@ -10,6 +10,7 @@ import com.example.nextweather.model.County;
 import com.example.nextweather.model.Province;
 import com.example.nextweather.util.HttpCallbackListener;
 import com.example.nextweather.util.HttpUtil;
+import com.example.nextweather.util.LogUtil;
 import com.example.nextweather.util.Utility;
 
 import android.app.Activity;
@@ -19,6 +20,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -58,16 +60,40 @@ public class ChooseAreaActivity extends Activity {
 	//当前选中的级别
 	private int currentLevel;
 
+	/*判断是否从WeatherInfoActivity活动中跳转过来*/
+	private boolean isFromWeatherActivity;	/*布尔型成员变量用来标记
+	当前活动是否从WeatherActivity活动中跳转过来的*/
+	/*判断有没有已选定好的城市*/
+	private Boolean hasSelectedCity;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		SharedPreferences prefs = PreferenceManager.
-				getDefaultSharedPreferences(this);
-		if (prefs.getBoolean("city_selected", false)) {
+		isFromWeatherActivity=getIntent().getBooleanExtra("from_weather_activity", false);
+		if(isFromWeatherActivity){
+			LogUtil.d("ChooseAreaActivity", "成员变量isFromWeatherActivity的值为true。");
+		}else{
+			LogUtil.d("ChooseAreaActivity", "成员变量isFromWeatherActivity的值为false。");
+		}
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		hasSelectedCity=prefs.getBoolean("city_selected", false);
+		if (hasSelectedCity) {
+			LogUtil.d("ChooseAreaActivity", "SPs实例中存放的键\"city_selected\"对应的值为true，"
+					+ "说明Utility类中的保存获取并解析出的天气信息的saveWeatherInfo()方法被调用执行过。");
+		} else {
+			LogUtil.d("ChooseAreaActivity", "SPs实例中存放的键\"city_selected\"对应的值为false，"
+					+"Utility类中保存天气信息的方法未成功执行。");
+		}
+		if (hasSelectedCity && !isFromWeatherActivity) {
+			/*已经选择了城市，且不是从WeatherInfoActivity活动中跳转过来的，才会跳转到WeatherInfoActivity*/
 			Intent intent = new Intent(this, WeatherInfoActivity.class);
+			LogUtil.d("ChooseAreaActivity", "Intent对象已准备好！");
 			startActivity(intent);
-			finish();
+			LogUtil.d("ChooseAreaActivity", "已启动目标活动——天气信息。");
+			finish();	//结束/关闭当前活动
 			return;
+		}else{
+			Toast.makeText(this, "请先选择想查询的城市", Toast.LENGTH_LONG).show();
 		}
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.choose_area);
@@ -88,8 +114,7 @@ public class ChooseAreaActivity extends Activity {
 					queryCounties();
 				} else if (currentLevel == LEVEL_COUNTY) {
 					String countyCode = countyList.get(index).getCountyCode();
-					Intent intent = new Intent(ChooseAreaActivity.this,
-							WeatherInfoActivity.class);
+					Intent intent = new Intent(ChooseAreaActivity.this,WeatherInfoActivity.class);
 					intent.putExtra("county_code", countyCode);
 					startActivity(intent);
 					finish();
@@ -228,9 +253,19 @@ public class ChooseAreaActivity extends Activity {
 	public void onBackPressed() {
 		if (currentLevel == LEVEL_COUNTY) {
 			queryCities();
+			Toast.makeText(this, "返回到查询市级", Toast.LENGTH_SHORT).show();
 		} else if (currentLevel == LEVEL_CITY) {
 			queryProvinces();
-		} else {
+			Toast.makeText(this, "返回到查询省份", Toast.LENGTH_SHORT).show();
+		} else if(isFromWeatherActivity){
+			Intent intent=new Intent(this,WeatherInfoActivity.class);
+			startActivity(intent);	/*按下Back键时，如果是从WeatherActivity活动中
+			跳转过来的，则应重新回到WeatherInfoActivity中*/
+			Toast.makeText(this, "若是从天气显示界面更改城市中跳转过来的，则还是返回到天气界面中",
+					Toast.LENGTH_SHORT).show();
+			finish();
+		} else if(currentLevel==LEVEL_PROVINCE&selectedCity==null) {
+			Toast.makeText(this, "再次按返回将退出程序", Toast.LENGTH_SHORT);
 			finish();
 		}
 	}

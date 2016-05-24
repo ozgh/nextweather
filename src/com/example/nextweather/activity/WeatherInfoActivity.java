@@ -6,6 +6,7 @@ import com.example.nextweather.util.HttpUtil;
 import com.example.nextweather.util.Utility;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -17,7 +18,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class WeatherInfoActivity extends Activity {
+public class WeatherInfoActivity extends Activity implements OnClickListener{
 
 	private LinearLayout weatherInfoLayout;
 	//显示城市名
@@ -33,9 +34,9 @@ public class WeatherInfoActivity extends Activity {
 	//用于显示当前日期
 	private TextView currentDateText;
 	//切换城市按钮
-	/*private Button switchCity;
+	private Button changeCity;
 	//更新天气按钮
-	private Button refreshWeather;*/
+	private Button refreshWeather;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +51,8 @@ public class WeatherInfoActivity extends Activity {
 		temp1Text = (TextView) findViewById(R.id.temp1);
 		temp2Text = (TextView) findViewById(R.id.temp2);
 		currentDateText = (TextView) findViewById(R.id.current_date);
-		/*switchCity = (Button) findViewById(R.id.switch_city);
-		refreshWeather = (Button) findViewById(R.id.refresh_weather);*/
+		changeCity = (Button) findViewById(R.id.change_city);
+		refreshWeather = (Button) findViewById(R.id.refresh_weather);
 		String countyCode = getIntent().getStringExtra("county_code");
 		if (!TextUtils.isEmpty(countyCode)) {
 			// 有县级代号时就去查询天气
@@ -63,14 +64,14 @@ public class WeatherInfoActivity extends Activity {
 			// 没有县级代号时就直接显示本地天气
 			showWeather();
 		}
-		/*switchCity.setOnClickListener(this);
-		refreshWeather.setOnClickListener(this);*/
+		changeCity.setOnClickListener(this);
+		refreshWeather.setOnClickListener(this);
 	}
 
-	/*@Override
+	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-		case R.id.switch_city:
+		case R.id.change_city:
 			Intent intent = new Intent(this, ChooseAreaActivity.class);
 			intent.putExtra("from_weather_activity", true);
 			startActivity(intent);
@@ -88,7 +89,7 @@ public class WeatherInfoActivity extends Activity {
 		default:
 			break;
 		}
-	}*/
+	}
 
 	/*查询县级代号所对应的天气代号。*/
 	private void queryWeatherCode(String countyCode) {

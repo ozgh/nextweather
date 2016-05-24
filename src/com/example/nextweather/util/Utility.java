@@ -96,14 +96,13 @@ public class Utility {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+		LogUtil.d("Utility", "解析服务器返回的天气信息JSON数据完成，并成功保存到本地");
 	}
 
 	/*  将服务器返回的所有天气信息(已解析出的)存储到SharedPreferences 文件中。*/
-	public static void saveWeatherInfo(Context context, String cityName,
-			String weatherCode, String temp1, String temp2, String weatherDesp, String
-			publishTime) {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy 年M 月d 日",
-				Locale.CHINA);
+	public static void saveWeatherInfo(Context context, String cityName,String weatherCode,
+			String temp1, String temp2, String weatherDesp, String publishTime) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy 年M 月d 日", Locale.CHINA);
 		SharedPreferences.Editor editor = PreferenceManager
 				.getDefaultSharedPreferences(context).edit();
 		editor.putBoolean("city_selected", true);
